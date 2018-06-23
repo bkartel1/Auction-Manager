@@ -9,6 +9,15 @@ $errs = array();
 $cons = array();
 $errs2 = array();
 $cons2 = array();
+$errs3 = array();
+$cons3 = array();
+$errs4 = array();
+$cons4 = array();
+$errs5 = array();
+$cons5 = array();
+$errs6 = array();
+$cons6 = array();
+$null = NULL;
 
 $action = filter_input(INPUT_GET, "action");
 
@@ -107,7 +116,7 @@ if ($action == "user") { //add/edit user
     mysqli_query($connection, "DELETE FROM $Adb WHERE first_name='".$userFirstName."' AND last_name='".$userLastName."' And birth='".$userBirth."';");
     array_push($cons, "Successfully deleted user ".$userFirstName." ".$userLastName."!");
   } else {
-    array_push($errs, "This user couldn't be deleted because it wasn't found in the database.");
+    array_push($errs, "This user couldn't be deleted because it wasn't found in the database." .mysqli_error($connection));
   }
 } else if ($action == "dellot") {
   $lotNumber = filter_input(INPUT_POST, "lotNumber", FILTER_SANITIZE_SPECIAL_CHARS);
@@ -116,37 +125,20 @@ if ($action == "user") { //add/edit user
   $q = mysqli_query($connection, "SELECT * FROM $Adbi WHERE lot_no='".$lotNumber."'");
   if ($q != NULL && $result = mysqli_fetch_assoc($q)) {
     mysqli_query($connection, "DELETE FROM $Adbi WHERE lot_no='".$lotNumber."';");
-    array_push($cons2, "Successfully deleted lot ".$lotNumber."!");
+    array_push($cons, "Successfully deleted lot ".$lotNumber."!");
   } else {
-    array_push($errs2, "This lot couldn't be deleted because it wasn't found in the database.");
+    array_push($errs, "This lot couldn't be deleted because it wasn't found in the database." .mysqli_error($connection));
   }
 }
 
 ?>
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Speziali Auction Database Management</title>
-    <link rel="stylesheet" type="text/css" href="./style.css"/>
-    <script type="text/javascript" src="./forms.js"></script>
-  </head>
-  <body onload="onLoadFunction();">
-    <header>Speziali Auction Database Management</header>
-    <span>Font Size:</span>
-    <div id="fontButtonContainer">
-      <div id="smallFont" class="minibutton">A</div>
-      <div id="medFont" class="minibutton">A</div>
-      <div id="bigFont" class="minibutton">A</div>
-    </div>
-    <p> </p>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-	<div class="icon-bar">
-	<a class="active" href="index.php"><i class="fa fa-home"></i></a><p>&nbspCurrent Auction <?php echo $Auction ?> </p>
-	</div>
     <?php
+    include "header.php";
+    
+
+    
     if (count($errs) > 0) {
       echo "<div id=\"err\">\n";
       while ($res = array_pop($errs)) {
@@ -165,16 +157,7 @@ if ($action == "user") { //add/edit user
 
     echo "\n";
     ?>
-
-    <p>Select A Tab From Below To Manage Auction</p>
-    <div class="topnav" id="myTopnav">
-  <a href="register.php">Register User</a>
-  <a href="lots.php">Add/Edit Lots</a>
-  <a href="checkoutbuyer.php">Checkout Buyer</a>
-  <a href="checkoutseller.php">Checkout Seller</a>
-  <a href="admin.php">Reports and Tools</a>
-  <a href="edit.php">Edit Users and Lots</a>
-	</div>
+    
 	<div id="userInfo" <?php if ($action == user) echo "style=\"display: block;\""; ?>>
       <p><b>This form is to only edit a customers name for the current auction.</b><br><b style="color: red;">This will not update them in the master database.</b><br><b>Please use the form under the Edit Users and Lots Tab to edit users in the master database.</b></p>
       <form action="editcustomer.php?action=user" method="POST">

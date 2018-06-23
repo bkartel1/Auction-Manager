@@ -33,7 +33,7 @@ if ($action == "paid") { //add/edit lot as paid
     } else {
       $d = mysqli_query($connection, "UPDATE $Adbi SET paid='PAID' WHERE buyer_id='".$lotBuyerID."'");
       $d2 = mysqli_query($connection, "UPDATE $Adb SET paid='PAID' WHERE buyer_id='".$lotBuyerID."'");
-      if (!$d) array_push ($errs, "Couldn't update data in database. Please try again.");
+      if (!$d) array_push ($errs, "Couldn't update data in database. Please try again." .mysqli_error($connection));
       else array_push($cons, "Successfully updated buyer number ".$lotBuyerID." as paid!");
     }
   }
@@ -72,36 +72,17 @@ if ($action == "paid") { //add/edit lot as paid
     } else {
       $d = mysqli_query($connection, "UPDATE $Adbi SET paid='UNPAID' WHERE buyer_id='".$lotBuyerID."'");
       $d2 = mysqli_query($connection, "UPDATE $Adb SET paid='UNPAID' WHERE buyer_id='".$lotBuyerID."'");
-      if (!$d) array_push ($errs, "Couldn't update data in database. Please try again.");
+      if (!$d) array_push ($errs, "Couldn't update data in database. Please try again." .mysqli_error($connection));
       else array_push($cons, "Successfully updated buyer number ".$lotBuyerID." as UNPAID!");
     }
   }
 }
 
 ?><!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Speziali Auction Database Management</title>
-    <link rel="stylesheet" type="text/css" href="./style.css"/>
-    <script type="text/javascript" src="./forms.js"></script>
-  </head>
-  <body onload="onLoadFunction();">
-    <header>Speziali Auction Database Management</header>
-    <span>Font Size:</span>
-    <div id="fontButtonContainer">
-      <div id="smallFont" class="minibutton">A</div>
-      <div id="medFont" class="minibutton">A</div>
-      <div id="bigFont" class="minibutton">A</div>
-    </div>
-    <p> </p>
-	
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<div class="icon-bar">
-	<a class="active" href="index.php"><i class="fa fa-home"></i></a><p>&nbspCurrent Auction <?php echo $Auction ?> </p>
-	</div>
     <?php
+    include "header.php";
+    
     if (count($errs) > 0) {
       echo "<div id=\"err\">\n";
       while ($res = array_pop($errs)) {
@@ -121,16 +102,6 @@ if ($action == "paid") { //add/edit lot as paid
     echo "\n";
     ?>
 
-    <p>Select A Tab From Below To Manage Auction</p>
-     <div class="topnav" id="myTopnav">
-  <a href="register.php">Register User</a>
-  <a href="lots.php">Add/Edit Lots</a>
-  <a href="checkoutbuyer.php">Checkout Buyer</a>
-  <a href="checkoutseller.php">Checkout Seller</a>
-  <a href="admin.php">Reports and Tools</a>
-  <a href="edit.php">Edit Users and Lots</a>
-	</div>
-	</div>
 	<p>Enter Buyer ID To Checkout Buyer</p>
 	<p>Select a lot from below to edit or delete an existing entry.</p>
 	<div id="checkoutInfo">

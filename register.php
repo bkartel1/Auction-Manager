@@ -9,7 +9,15 @@ $errs = array();
 $cons = array();
 $errs2 = array();
 $cons2 = array();
-
+$errs3 = array();
+$cons3 = array();
+$errs4 = array();
+$cons4 = array();
+$errs5 = array();
+$cons5 = array();
+$errs6 = array();
+$cons6 = array();
+$null = NULL;
 $action = filter_input(INPUT_GET, "action");
 
 if ($action == "user") { //add/edit user
@@ -73,8 +81,8 @@ if ($action == "user") { //add/edit user
       if (!$d) array_push ($errs, "Couldn't insert data into database1. Please try again." .mysqli_error($connection));
       else array_push($cons, "Successfully added user ".$userLastName.", ".$userFirstName."!");
       }if(mysqli_num_rows($q1) == 0) {
-	  $d1 = mysqli_query($connection, "INSERT INTO masterusers (first_name, last_name, birth, street, city, state, zip, id, phone, email, tax, taxid, buyer_commission, seller_commission, notes, disposal, disposal_note) VALUES ('".$userFirstName."','".$userLastName."', '".$userBirth."', '".$userStreet."','".$userCity."','".$userState."','".$userZip."','".$userID."','".$userPhone."',IF('".$userEmail."'='',NULL,'".$userEmail."'),'".$userTax."','".$userTaxID."','".$userBuyercomm."','".$userSellercomm."','".$userNotes."','".$userDisposal."','".$userDisNotes."');");
-      if (!$d1) array_push ($errs, "Couldn't insert data into database1. Please try again.");
+	  $d1 = mysqli_query($connection, "INSERT INTO masterusers (first_name, last_name, birth, street, city, state, zip, id, phone, email, tax, taxid, buyer_commission, seller_commission, notes) VALUES ('".$userFirstName."','".$userLastName."', '".$userBirth."', '".$userStreet."','".$userCity."','".$userState."','".$userZip."','".$userID."','".$userPhone."',IF('".$userEmail."'='',NULL,'".$userEmail."'),'".$userTax."','".$userTaxID."','".$userBuyercomm."','".$userSellercomm."','".$userNotes."');");
+      if (!$d1) array_push ($errs, "Couldn't insert data into database1. Please try again." .mysqli_error($connection));
       else array_push($cons, "Successfully added user ".$userLastName.", ".$userFirstName."! into master database");
       } else {
 	  $d = mysqli_query($connection, "UPDATE $Adb SET buyer_id=IF('".$userBuyerID."'='',NULL,'".$userBuyerID."'), seller_id=IF
@@ -105,7 +113,7 @@ if ($action == "user") { //add/edit user
     mysqli_query($connection, "DELETE FROM $Adb WHERE first_name='".$userFirstName."' AND last_name='".$userLastName."' And birth='".$userBirth."';");
     array_push($cons, "Successfully deleted user ".$userFirstName." ".$userLastName."!");
   } else {
-    array_push($errs, "This user couldn't be deleted because it wasn't found in the database.");
+    array_push($errs, "This user couldn't be deleted because it wasn't found in the database." .mysqli_error($connection));
   }
 } else if ($action == "dellot") {
   $lotNumber = filter_input(INPUT_POST, "lotNumber", FILTER_SANITIZE_SPECIAL_CHARS);
@@ -116,35 +124,16 @@ if ($action == "user") { //add/edit user
     mysqli_query($connection, "DELETE FROM $Adbi WHERE lot_no='".$lotNumber."';");
     array_push($cons2, "Successfully deleted lot ".$lotNumber."!");
   } else {
-    array_push($errs2, "This lot couldn't be deleted because it wasn't found in the database.");
+    array_push($errs2, "This lot couldn't be deleted because it wasn't found in the database." .mysqli_error($connection));
   }
 }
 
 ?>
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Speziali Auction Database Management</title>
-    <link rel="stylesheet" type="text/css" href="./style.css"/>
-    <script type="text/javascript" src="./forms.js"></script>
-  </head>
-  <body onload="onLoadFunction();">
-    <header>Speziali Auction Database Management</header>
-    <span>Font Size:</span>
-    <div id="fontButtonContainer">
-      <div id="smallFont" class="minibutton">A</div>
-      <div id="medFont" class="minibutton">A</div>
-      <div id="bigFont" class="minibutton">A</div>
-    </div>
-    <p> </p>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-	<div class="icon-bar">
-	<a class="active" href="index.php"><i class="fa fa-home"></i></a><p>&nbspCurrent Auction <?php echo $Auction ?> </p>
-	</div>
     <?php
+    include "header.php";
+    
     if (count($errs) > 0) {
       echo "<div id=\"err\">\n";
       while ($res = array_pop($errs)) {
@@ -164,20 +153,13 @@ if ($action == "user") { //add/edit user
     echo "\n";
     ?>
 
-    <p>Select A Tab From Below To Manage Auction</p>
-    <div class="topnav" id="myTopnav">
-  <a href="register.php">Register User</a>
-  <a href="lots.php">Add/Edit Lots</a>
-  <a href="checkoutbuyer.php">Checkout Buyer</a>
-  <a href="checkoutseller.php">Checkout Seller</a>
-  <a href="admin.php">Reports and Tools</a>
-  <a href="edit.php">Edit Users and Lots</a>
-	</div>
+   
 	<div id="userInfo" <?php if ($action == user) echo "style=\"display: block;\""; ?>>
       <p>Entering a user with the same name will edit an existing entry.</p>
       <form action="register.php?action=user" method="POST">
         <table>
 		  <p>Search For Existing User Before Entering New User</p>
+		  <p style="color: red;"> Ernie Get All INFO!! <p>
           <tr>
             <td><label for="userFirstName">First Name:</label></td>
             <td><input type="text" id="userFirstName" name="userFirstName" required/><br/></td>
@@ -214,7 +196,7 @@ if ($action == "user") { //add/edit user
           </tr>
           <tr>
 		  <td><label for="userTax">Tax Rate:</label></td>
-            <td><input type="text" value=6.875 id="userTax" name="userTax" required/><br/></td>
+            <td><input type="text" value=6.625 id="userTax" name="userTax" required/><br/></td>
             <td><label for="userTaxID">Tax ID #:</label></td>
             <td><input type="text" id="userTaxID" name="userTaxID"/><br/></td>
            </tr>
@@ -223,7 +205,15 @@ if ($action == "user") { //add/edit user
             <td><input type="text" id="userBuyercomm" name="userBuyercomm"/><br/></td>
             <td><label for="userSellercomm">Seller Commission:</label></td>
             <td><input type="text" id="userSellercomm" name="userSellercomm"/><br/></td>
+            <td><label for="userSetup">Seller Setup Fee:</label></td>
+            <td><input type="text" id="userSetup" name="userSetup"/><br/></td>
             </td>
+          </tr>
+          <tr>
+			<td><label for="userDisposal">Seller Disposal Fee:</label></td>
+            <td><input type="text" id="userDisposal" name="userDisposal"/><br/></td>
+            <td><label for="userDisNote">Seller Disposal Notes:</label></td>
+            <td><input type="text" id="userDisNotes" name="userDisNotes"/><br/></td>
           </tr>
           <tr>
             <td><label for="userNotes">Customer Notes:</label></td>
@@ -310,7 +300,7 @@ if ($action == "user") { //add/edit user
           $js .= "userBuyercomm.value = '".$result["buyer_commission"]."'; ";
           $js .= "userSellercomm.value = '".$result["seller_commission"]."'; ";
           $js .= "userNotes.value = '".$result["notes"]."'; ";
-         // $js .= "userSetup.value = '".$result["setup"]."'; ";
+          $js .= "userSetup.value = '".$result["setup"]."'; ";
           $js .= "userBuyerID.value = '".$result["buyer_id"]."'; ";
           $js .= "userSellerID.value = '".$result["seller_id"]."'; ";
           echo "        ";

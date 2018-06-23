@@ -21,6 +21,7 @@ echo "  <table class='table2excel' data-tableName='Overall' border='1'>
 <th>Title</th>
 <th>Seller ID</th>
 <th>Absentee</th>
+<th>Absentee Bidder ID</th>
 </tr>";
 
 while($row = mysqli_fetch_array($result))
@@ -30,6 +31,7 @@ echo "<td>" .$row['lot_no']. "</td>";
 echo "<td>" .$row['title']. "</td>";
 echo "<td>" .$row['seller_id']. "</td>";
 echo "<td>" .$row['absentee']. "</td>";
+echo "<td style='text-align: center;'>" .$row['absentee_bidder']. "</td>";
 echo "</tr>";
 }
 echo "</table>";

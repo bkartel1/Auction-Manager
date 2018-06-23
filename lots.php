@@ -54,13 +54,13 @@ if ($action == "lot") { //add/edit lot
     if(mysqli_num_rows($q) == 0) {
       $d = mysqli_query($connection, "INSERT INTO $Adbi (lot_no, buyer_id, seller_id, price, title, paid, seller_paid, qty, reserve, absentee, absentee_bidder) ".
               "VALUES ('".$lotNumber."',IF('".$lotBuyerID."'='',NULL,'".$lotBuyerID."'),IF('".$lotSellerID."'='',NULL,'".$lotSellerID."'),IF('".$lotPrice."'='',0,'".$lotPrice."'),'".$lotTitle."','UNPAID','UNPAID',IF('".$lotQty."'='',NULL,'".$lotQty."'),IF('".$lotReserve."'='',NULL,'".$lotReserve."'),IF('".$lotAbsentee."'='',NULL,'".$lotAbsentee."'),IF('".$lotAbsenteeBid."'='',NULL,'".$lotAbsenteeBid."'));");
-      if (!$d) array_push ($errs3, mysqli_error ()."Couldn't insert data into database. Please try again.");
+      if (!$d) array_push ($errs3, mysqli_error ()."Couldn't insert data into database. Please try again." .mysqli_error($connection));
       else array_push($cons3, "Successfully added lot number ".$lotNumber."!");
     } else {
       $d = mysqli_query($connection, "UPDATE $Adbi SET buyer_id=IF('".$lotBuyerID."'='',NULL,'".$lotBuyerID."'), seller_id=IF
               ('".$lotSellerID."'='',NULL,'".$lotSellerID."'), price=IF('".$lotPrice."'='',0,'".$lotPrice."'), title='".$lotTitle."', paid='UNPAID', seller_paid='UNPAID', qty=IF('".$lotQty."'='',NULL,'".$lotQty."'), reserve=IF('".$lotReserve."'='',NULL,'".$lotReserve."'), absentee=IF('".$lotAbsentee."'='',NULL,'".$lotAbsentee."'), absentee_bidder=IF('".$lotAbsenteeBid."'='',NULL,'".$lotAbsenteeBid."') WHERE lot_no='".$lotNumber."'");
       $d2 = mysqli_query($connection, "UPDATE $Adb SET paid='UNPAID' WHERE buyer_id='".$lotBuyerID."'");
-      if (!$d) array_push ($errs3, "Couldn't update data in database. Please try again.");
+      if (!$d) array_push ($errs3, "Couldn't update data in database. Please try again." .mysqli_error($connection));
       else array_push($cons3, "Successfully updated lot number ".$lotNumber."!");
     }
   }
@@ -128,7 +128,7 @@ if ($action == "lot") { //add/edit lot
       $d2 = mysqli_query($connection, "UPDATE $Adbi SET bundle='BUNDLED', price='".$lotPrice."', buyer_id='".$lotBuyerID."' WHERE lot_no='".$lotNumber7."'");
       $d2 = mysqli_query($connection, "UPDATE $Adbi SET bundle='BUNDLED', price='".$lotPrice."', buyer_id='".$lotBuyerID."' WHERE lot_no='".$lotNumber8."'");
       $d2 = mysqli_query($connection, "UPDATE $Adbi SET bundle='BUNDLED', price='".$lotPrice."', buyer_id='".$lotBuyerID."' WHERE lot_no='".$lotNumber9."'");
-      if (!$d) array_push ($errs4, "Couldn't update data in database. Please try again.");
+      if (!$d) array_push ($errs4, "Couldn't update data in database. Please try again." .mysqli_error($connection));
       else array_push($cons4, "Successfully Bundled lots!");
     }
   }
@@ -176,7 +176,7 @@ if ($action == "lot") { //add/edit lot
       $d = mysqli_query($connection, "UPDATE $Adbi SET buyer_id='".$lotBuyerID."',
                price='".$totalPrice."', bundle='Table Buy' WHERE seller_id='".$lotSellerID."' AND price=0.00");
       $d2 = mysqli_query($connection, "UPDATE users SET paid='UNPAID' WHERE buyer_id='".$lotBuyerID."'");
-      if (!$d) array_push ($errs5, "Couldn't update data in database. Please try again.");
+      if (!$d) array_push ($errs5, "Couldn't update data in database. Please try again." .mysqli_error($connection));
       else array_push($cons4, "Successfully sold remainder of items on seller '".$lotSellerID."'s Table!");
     }
   }
@@ -189,7 +189,7 @@ if ($action == "lot") { //add/edit lot
     mysqli_query($connection, "DELETE FROM $Adbi WHERE lot_no='".$lotNumber."';");
     array_push($cons2, "Successfully deleted lot ".$lotNumber."!");
   } else {
-    array_push($errs2, "This lot couldn't be deleted because it wasn't found in the database.");
+    array_push($errs2, "This lot couldn't be deleted because it wasn't found in the database." .mysqli_error($connection));
   }
 }else if ($action == "box") { //add/edit lot
 
@@ -228,7 +228,7 @@ if ($action == "lot") { //add/edit lot
     {
       $d = mysqli_query($connection, "INSERT INTO $Adbi (lot_no, buyer_id, seller_id, price, title, paid, seller_paid, qty) ".
               "VALUES ('".$lotSellerID.$boxlot."',IF('".$lotBuyerID."'='',NULL,'".$lotBuyerID."'),IF('".$lotSellerID."'='',NULL,'".$lotSellerID."'),IF('".$lotPrice."'='',0,'".$lotPrice."'),'".$lotTitle."','UNPAID','UNPAID',IF('".$lotQty."'='',NULL,'".$lotQty."'));");
-      if (!$d) array_push ($errs2, mysqli_error ()."Couldn't insert data into database. Please try again.");
+      if (!$d) array_push ($errs2, mysqli_error ()."Couldn't insert data into database. Please try again." .mysqli_error($connection));
       else array_push($cons2, "Successfully added lot number ".$lotNumber."!");
     //} else {
       //$d = mysqli_query($connection, "UPDATE $Adbi SET buyer_id=IF('".$lotBuyerID."'='',NULL,'".$lotBuyerID."'), seller_id=IF
@@ -273,7 +273,7 @@ if ($action == "lot") { //add/edit lot
     {
       $d = mysqli_query($connection, "INSERT INTO $Adbi (lot_no, buyer_id, seller_id, price, title, paid, seller_paid, qty) ".
               "VALUES ('".$lotSellerID."',IF('".$lotBuyerID."'='',NULL,'".$lotBuyerID."'),IF('".$lotSellerID."'='',NULL,'".$lotSellerID."'),IF('".$lotPrice."'='',0,'".$lotPrice."'),'".$lotTitle."','UNPAID','UNPAID',IF('".$lotQty."'='',NULL,'".$lotQty."'));");
-      if (!$d) array_push ($errs6, mysqli_error ()."Couldn't insert data into database. Please try again.");
+      if (!$d) array_push ($errs6, mysqli_error ()."Couldn't insert data into database. Please try again." .mysqli_error($connection));
       else array_push($cons6, "Successfully added lot number ".$lotNumber."!");
     //} else {
       //$d = mysqli_query($connection, "UPDATE $Adbi SET buyer_id=IF('".$lotBuyerID."'='',NULL,'".$lotBuyerID."'), seller_id=IF
@@ -286,38 +286,10 @@ if ($action == "lot") { //add/edit lot
 }
 
 ?><!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Speziali Auction Database Management</title>
-    <link rel="stylesheet" type="text/css" href="./style.css"/>
-    <script type="text/javascript" src="./forms.js"></script>
-  </head>
-  <body onload="onLoadFunction();">
-    <header>Speziali Auction Database Management</header>
-    <span>Font Size:</span>
-    <div id="fontButtonContainer">
-      <div id="smallFont" class="minibutton">A</div>
-      <div id="medFont" class="minibutton">A</div>
-      <div id="bigFont" class="minibutton">A</div>
-    </div>
-    <p> </p>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-	<div class="icon-bar">
-	<a class="active" href="index.php"><i class="fa fa-home"></i></a><p>&nbspCurrent Auction <?php echo $Auction ?> </p>
-	</div>
-    <p>Select A Tab From Below To Manage Auction</p>
-    <div class="topnav" id="myTopnav">
-  <a href="register.php">Register User</a>
-  <a href="lots.php">Add/Edit Lots</a>
-  <a href="checkoutbuyer.php">Checkout Buyer</a>
-  <a href="checkoutseller.php">Checkout Seller</a>
-  <a href="admin.php">Reports and Tools</a>
-  <a href="edit.php">Edit Users and Lots</a>
-  
-	</div>
+		<?php
+    include "header.php";
+		?>
 	<div>
 	<p>Enter lots that are not preloaded below.  Seller ID will also become the lot number.</p>
 	<form action="lots.php?action=notloaded" method="POST">
@@ -340,6 +312,7 @@ if ($action == "lot") { //add/edit lot
 
     echo "\n";
     ?>
+		<p></p>
         <table>
           <tr>
             <td><label for="lotgoSellerID">Seller ID:</label></td>

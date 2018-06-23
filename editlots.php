@@ -56,17 +56,17 @@ if ($action == "lot") { //add/edit lot
     if(mysqli_num_rows($q) == 0) {
       $d = mysqli_query($connection, "INSERT INTO $Adbi (lot_no, buyer_id, seller_id, price, title, paid, seller_paid, qty, reserve, absentee, absentee_bidder) ".
               "VALUES ('".$lotNumber."',IF('".$lotBuyerID."'='',NULL,'".$lotBuyerID."'),IF('".$lotSellerID."'='',NULL,'".$lotSellerID."'),IF('".$lotPrice."'='',0,'".$lotPrice."'),'".$lotTitle."','UNPAID','UNPAID',IF('".$lotQty."'='',NULL,'".$lotQty."'),IF('".$lotReserve."'='',NULL,'".$lotReserve."'),IF('".$lotAbsentee."'='',NULL,'".$lotAbsentee."'),IF('".$lotAbsenteeBid."'='',NULL,'".$lotAbsenteeBid."'));");
-      if (!$d) array_push ($errs3, mysqli_error ()."Couldn't insert data into database. Please try again.");
+      if (!$d) array_push ($errs3, mysqli_error ()."Couldn't insert data into database. Please try again." .mysqli_error($connection));
       else array_push($cons3, "Successfully added lot number ".$lotNumber."!");
     } else {
       $d = mysqli_query($connection, "UPDATE $Adbi SET buyer_id=IF('".$lotBuyerID."'='',NULL,'".$lotBuyerID."'), seller_id=IF
               ('".$lotSellerID."'='',NULL,'".$lotSellerID."'), price=IF('".$lotPrice."'='',0,'".$lotPrice."'), title='".$lotTitle."', paid='UNPAID', seller_paid='UNPAID', qty=IF('".$lotQty."'='',NULL,'".$lotQty."'), reserve=IF('".$lotReserve."'='',NULL,'".$lotReserve."'), absentee=IF('".$lotAbsentee."'='',NULL,'".$lotAbsentee."'), absentee_bidder=IF('".$lotAbsenteeBid."'='',NULL,'".$lotAbsenteeBid."') WHERE itemnum='".$itemNum."'");
       $d2 = mysqli_query($connection, "UPDATE $Adb SET paid='UNPAID' WHERE buyer_id='".$lotBuyerID."'");
-      if (!$d) array_push ($errs3, "Couldn't update data in database. Please try again.");
+      if (!$d) array_push ($errs3, "Couldn't update data in database. Please try again." .mysqli_error($connection));
       else array_push($cons3, "Successfully updated lot number ".$lotNumber."!");
     }
   }
-}else if ($action == "bundle") { //add/edit lot
+}/*else if ($action == "bundle") { //add/edit lot
   $lotNumber = filter_input(INPUT_POST, "lotNumber", FILTER_SANITIZE_SPECIAL_CHARS);
   if ($lotNumber == false || $lotNumber == NULL) array_push($errs, "A lot number is required.");
 
@@ -286,43 +286,12 @@ if ($action == "lot") { //add/edit lot
     }
   }
 }
-
+*/
 ?><!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Speziali Auction Database Management</title>
-    <link rel="stylesheet" type="text/css" href="./style.css"/>
-    <script type="text/javascript" src="./forms.js"></script>
-  </head>
-  <body onload="onLoadFunction();">
-    <header>Speziali Auction Database Management</header>
-    <span>Font Size:</span>
-    <div id="fontButtonContainer">
-      <div id="smallFont" class="minibutton">A</div>
-      <div id="medFont" class="minibutton">A</div>
-      <div id="bigFont" class="minibutton">A</div>
-    </div>
-    <p> </p>
+<?php
+include "header.php";
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-	<div class="icon-bar">
-	<a class="active" href="index.php"><i class="fa fa-home"></i></a><p>&nbspCurrent Auction <?php echo $Auction ?> </p>
-	</div>
-    <p>Select A Tab From Below To Manage Auction</p>
-    <div class="topnav" id="myTopnav">
-  <a href="register.php">Register User</a>
-  <a href="lots.php">Add/Edit Lots</a>
-  <a href="checkoutbuyer.php">Checkout Buyer</a>
-  <a href="checkoutseller.php">Checkout Seller</a>
-  <a href="admin.php">Reports and Tools</a>
-  <a href="edit.php">Edit and Delete Lots Lots</a>
-	</div>
-	<div>
-	<div id="lotInfo" <?php if ($action == "lot") echo "style=\"display: block;\""; ?> >
-	<?php
-    if (count($errs3) > 0) {
+if (count($errs3) > 0) {
       echo "<div id=\"err\">\n";
       while ($res = array_pop($errs3)) {
         echo "      <p>" . $res. "</p>\n";
@@ -339,9 +308,9 @@ if ($action == "lot") { //add/edit lot
     }
 
     echo "\n";
-    ?>
+?>
       <p>Use the Edit or Delete buttons below to edit or delete and item. Once an item is deleted it can not be undone.</p>
-      <form action="edit.php?action=lot" method="POST">
+      <form action="editlots.php?action=lot" method="POST">
         <table>
           <tr>
             <td><label for="lotNumber">Lot Number:</label></td>

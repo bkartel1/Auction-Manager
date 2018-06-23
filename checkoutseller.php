@@ -50,9 +50,9 @@ if ($action == "sellpaid") { //add/edit seller as paid
       $d = mysqli_query($connection, "UPDATE $Adbi SET seller_paid='PAID' WHERE seller_id='".$lotSellerID."'");
       $d2 = mysqli_query($connection, "UPDATE $Adb SET seller_paid='PAID' WHERE seller_id='".$lotSellerID."'");
       $d3 = mysqli_query($connection, "UPDATE $Adb SET seller_check='".$lotSellercheckID."' WHERE seller_id='".$lotSellerID."'");
-      if (!$d) array_push ($errs, "Couldn't update data in database. Please try again.");
-      if (!$d2) array_push ($errs, "Couldn't update data in database. Please try again.");
-      if (!$d3) array_push ($errs, "Couldn't update check in database. Please try again.");
+      if (!$d) array_push ($errs, "Couldn't update data in database. Please try again." .mysqli_error($connection));
+      if (!$d2) array_push ($errs, "Couldn't update data in database. Please try again." .mysqli_error($connection));
+      if (!$d3) array_push ($errs, "Couldn't update check in database. Please try again." .mysqli_error($connection));
       else array_push($cons, "Successfully updated seller number ".$lotSellerID." as paid!");
     }
   }
@@ -94,9 +94,9 @@ if ($action == "sellpaid") { //add/edit seller as paid
       $d = mysqli_query($connection, "UPDATE $Adbi SET seller_paid='UNPAID' WHERE seller_id='".$lotSellerID."'");
       $d2 = mysqli_query($connection, "UPDATE $Adb SET seller_paid='UNPAID' WHERE seller_id='".$lotSellerID."'");
       $d3 = mysqli_query($connection, "UPDATE $Adb SET seller_check='' WHERE seller_id='".$lotSellerID."'");
-      if (!$d) array_push ($errs, "Couldn't update data in database. Please try again.");
-      if (!$d2) array_push ($errs, "Couldn't update data in database. Please try again.");
-      if (!$d3) array_push ($errs, "Couldn't update check in database. Please try again.");
+      if (!$d) array_push ($errs, "Couldn't update data in database. Please try again." .mysqli_error($connection));
+      if (!$d2) array_push ($errs, "Couldn't update data in database. Please try again." .mysqli_error($connection));
+      if (!$d3) array_push ($errs, "Couldn't update check in database. Please try again." .mysqli_error($connection));
   else array_push($cons, "Successfully updated seller number ".$lotSellerID." as UNPAID!");
     }
   }
@@ -147,30 +147,11 @@ if ($action == "sellpaid") { //add/edit seller as paid
 }
 
 ?><!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Speziali Auction Database Management</title>
-    <link rel="stylesheet" type="text/css" href="./style.css"/>
-    <script type="text/javascript" src="./forms.js"></script>
-  </head>
-  <body onload="onLoadFunction();">
-    <header>Speziali Auction Database Management</header>
-    <span>Font Size:</span>
-    <div id="fontButtonContainer">
-      <div id="smallFont" class="minibutton">A</div>
-      <div id="medFont" class="minibutton">A</div>
-      <div id="bigFont" class="minibutton">A</div>
-    </div>
-    <p> </p>
-	
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<div class="icon-bar">
-	<a class="active" href="index.php"><i class="fa fa-home"></i></a><p>&nbspCurrent Auction <?php echo $Auction ?> </p>
-	</div>
     <?php
-    if (count($errs) > 0) {
+    include "header.php";
+    
+   if (count($errs) > 0) {
       echo "<div id=\"err\">\n";
       while ($res = array_pop($errs)) {
         echo "      <p>" . $res. "</p>\n";
@@ -189,15 +170,6 @@ if ($action == "sellpaid") { //add/edit seller as paid
     echo "\n";
     ?>
 
-    <p>Select A Tab From Below To Manage Auction</p>
-     <div class="topnav" id="myTopnav">
-  <a href="register.php">Register User</a>
-  <a href="lots.php">Add/Edit Lots</a>
-  <a href="checkoutbuyer.php">Checkout Buyer</a>
-  <a href="checkoutseller.php">Checkout Seller</a>
-  <a href="admin.php">Reports and Tools</a>
-  <a href="edit.php">Edit Users and Lots</a>
-	</div>
 	<p>Enter seller id below to view sales report.</p>
 	<div class= id="checkoutsellInfo">
       <form style="display: inline;" action="seller.php" method="GET">
